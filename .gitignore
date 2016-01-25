@@ -1,0 +1,7 @@
+.ipynb_checkpoints/
+_rmath_ffi.c
+_rmath_ffi.o
+_rmath_ffi.so
+_rmath_ffi.pyd
+
+*.sw[op]

@@ -1,0 +1,41 @@
+
+import glob
+import os
+import platform
+
+from cffi import FFI
+
+
+include_dirs = [os.path.join('externals', 'Rmath-julia', 'src'),
+                os.path.join('externals', 'Rmath-julia', 'include')]
+
+rmath_src = glob.glob(os.path.join('externals', 'Rmath-julia', 'src', '*.c'))
+
+# Take out dSFMT dependant files; Just use the basic rng
+rmath_src = [f for f in rmath_src if ('librandom.c' not in f) and ('randmtzig.c' not in f)]
+
+extra_compile_args = ['-DMATHLIB_STANDALONE']
+if platform.system() == 'Windows':
+    extra_compile_args.append('-std=c99')
+
+ffi = FFI()
+ffi.set_source('_rmath_ffi', '#include <Rmath.h>',
+        include_dirs=include_dirs,
+        sources=rmath_src,
+        libraries=[],
+        extra_compile_args=extra_compile_args)
+
+# This is an incomplete list of the available functions in Rmath
+# but these are sufficient for our example purposes
+ffi.cdef('''\
+double pnorm(double, double, double, int, int);
+double qnorm(double, double, double, int, int);
+double runif(double, double);
+void set_seed(unsigned int, unsigned int);
+void get_seed(unsigned int *, unsigned int *);
+''')
+
+if __name__ == '__main__':
+    # Normally set verbose to `True`, but silence output
+    # for reduced notebook noise
+    ffi.compile(verbose=False)
