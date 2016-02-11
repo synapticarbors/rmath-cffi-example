@@ -26,13 +26,20 @@ ffi.set_source('_rmath_ffi', '#include <Rmath.h>',
         extra_compile_args=extra_compile_args)
 
 # This is an incomplete list of the available functions in Rmath
-# but these are sufficient for our example purposes
+# but these are sufficient for our example purposes and gives a sense of
+# the types of functions we can get
 ffi.cdef('''\
+// Normal Distribution
+double dnorm(double, double, double, int);
 double pnorm(double, double, double, int, int);
-double qnorm(double, double, double, int, int);
-double runif(double, double);
-void set_seed(unsigned int, unsigned int);
-void get_seed(unsigned int *, unsigned int *);
+
+// Uniform Distribution
+double dunif(double, double, double, int);
+double punif(double, double, double, int, int);
+
+// Gamma Distribution
+double dgamma(double, double, double, int);
+double pgamma(double, double, double, int, int);
 ''')
 
 if __name__ == '__main__':
